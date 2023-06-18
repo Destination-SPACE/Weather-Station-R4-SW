@@ -54,17 +54,11 @@ void setup() {
     while(1);
   }
 
+  char buffer[64];
+  sprintf(buffer, "Time(s),Temp (C),Pressure (hPa),Humidity (%),Altitude (m)");
   myFile = SD.open("datalog.csv", FILE_WRITE);
   if(myFile){
-    myFile.print("Time (s)");
-    myFile.print(",");
-    myFile.print("Temp (C)");
-    myFile.print(",");
-    myFile.print("Pressure (hPa)");
-    myFile.print(",");
-    myFile.print("Humidity (%)");
-    myFile.print(",");
-    myFile.println("Altitude (m)");
+    myFile.println(buffer);
     myFile.close();
   }
 
@@ -85,17 +79,11 @@ void loop() {
   float humidity = bme.readHumidity();
   float altitude = bme.readAltitude(SEALEVELPRESSURE);
   
+  char buffer[64];
+  sprintf(buffer, "%0.2f, %0.2f, %0.2f, %0.2f", temperature, pressure, humidity, altitude);
   myFile = SD.open("datalog.csv", FILE_WRITE);
   if(myFile){
-    myFile.print(time, 2);
-    myFile.print(",");
-    myFile.print(temperature, 2);
-    myFile.print(",");
-    myFile.print(pressure, 2);
-    myFile.print(",");
-    myFile.print(humidity, 2);
-    myFile.print(",");
-    myFile.println(altitude, 2);
+    myFile.println(buffer);
     myFile.close();
   }
 
@@ -124,8 +112,7 @@ void loop() {
   display.print(" m");
   display.display();
 
-  char buffer[64];
-  sprintf(buffer, "%0.2f, %0.2f, %0.2f, %0.2f", temperature, pressure, humidity, altitude);
+  sprintf(buffer, "%0.2f C\t%0.2f hPa\t%0.2f\t%0.2f m", temperature, pressure, humidity, altitude);
   Serial.println(buffer);
   
   digitalWrite(LED_BUILTIN, HIGH);

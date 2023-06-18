@@ -9,6 +9,7 @@
 #include "Adafruit_SGP40.h"
 #include "SparkFun_SCD4x_Arduino_Library.h"
 
+int uva = A2;
 int uvb = A3;
 
 #define SCREEN_WIDTH 128
@@ -119,29 +120,20 @@ void loop() {
   float voc_index = sgp.measureVocIndex(temperature, humidity);
   float co2 = scd.getCO2();
 
-  int uvb_I = analogRead(uvb) * (3300 / 1024); //nA
+  float uva_I = analogRead(uva) * (3300 / 1024); //nA
+  float uva_P = uva_I / 113; //mW/cm2
+  float uva_index = (uva_I - 83) / 21; //UVI 
+
+  float uvb_I = analogRead(uvb) * (3300 / 1024); //nA
   float uvb_P = uvb_I / 69; //mW/cm2
   float uvb_index = uvb_I / 1.4; //UVI
+
+  char buffer[64];
+  sprintf(buffer, "%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f", time, temperature, pressure, humidity, altitude, lux, voc_index, co2, uva_index, uvb_index);
   
   myFile = SD.open("datalog.csv", FILE_WRITE);
   if(myFile){
-    myFile.print(time, 2);
-    myFile.print(",");
-    myFile.print(temperature, 2);
-    myFile.print(",");
-    myFile.print(pressure, 2);
-    myFile.print(",");
-    myFile.print(humidity, 2);
-    myFile.print(",");
-    myFile.print(altitude, 2);
-    myFile.print(",");
-    myFile.print(lux, 2);
-    myFile.print(",");
-    myFile.print(voc_index, 2);
-    myFile.print(",");
-    myFile.println(co2, 2);
-    myFile.print(",");
-    myFile.println(uvb_index, 2);
+    myFile.println(buffer);
     myFile.close();
   }
 
@@ -174,12 +166,13 @@ void loop() {
   display.print("ppm");
   
   display.setCursor(0, 40);
-  display.print("UVB: ");
+  display.print("UVA: ");
+  display.print(uva_index, 0);
+  display.print(" UVB: ");
   display.print(uvb_index, 0);
   display.display();
 
-  char buffer[64];
-  sprintf(buffer, "%0.2fC\t%0.2fhPa\t%0.2f\t%0.2fm\t%0.2flux\t%0.0f\t%0.0fppm\t%0.0f", temperature, pressure, humidity, altitude, lux, voc_index, co2, uvb_index);
+  sprintf(buffer, "%0.2fC\t%0.2fhPa\t%0.2f\t%0.2fm\t%0.2flux\t%0.0f\t%0.0fppm\t%0.2f\t%0.2f", temperature, pressure, humidity, altitude, lux, voc_index, co2, uva_index, uvb_index);
   Serial.println(buffer);
   digitalWrite(LED_BUILTIN, HIGH);
   delay(1000);
