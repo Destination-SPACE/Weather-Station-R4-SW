@@ -91,22 +91,22 @@ void loop() {
   display.setCursor(0,0);
   display.print("DS Weather Station");
   
-  display.setCursor(0, 10);
+  display.setCursor(0, 20);
   display.print("Temperature: ");
   display.print(temperature, 2);
   display.print(" C");
   
-  display.setCursor(0, 20);
+  display.setCursor(0, 30);
   display.print("Pressure: ");
   display.print(pressure, 2);
   display.print(" hPa");
   
-  display.setCursor(0, 30);
+  display.setCursor(0, 40);
   display.print("Humidity: ");
   display.print(humidity, 2);
   display.print(" %");
 
-  display.setCursor(0, 40);
+  display.setCursor(0, 50);
   display.print("Alt: ");
   display.print(altitude, 2);
   display.print(" m");
