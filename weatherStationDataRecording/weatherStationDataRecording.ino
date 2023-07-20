@@ -80,7 +80,7 @@ void loop() {
   float altitude = bme.readAltitude(SEALEVELPRESSURE);
   
   char buffer[64];
-  sprintf(buffer, "%0.2f, %0.2f, %0.2f, %0.2f", temperature, pressure, humidity, altitude);
+  sprintf(buffer, "%0.2f, %0.2f, %0.2f, %0.2f, %0.2f", time, temperature, pressure, humidity, altitude);
   myFile = SD.open("datalog.csv", FILE_WRITE);
   if(myFile){
     myFile.println(buffer);
